@@ -1,0 +1,176 @@
+<div class="flex flex-col h-screen">
+  <app-navbar></app-navbar>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">
+          {{ isEditMode ? 'Editar Cupom' : 'Novo Cupom' }}
+        </h1>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Form -->
+        <div class="card">
+          <form (ngSubmit)="onSubmit()" #cupomForm="ngForm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Código -->
+              <div class="md:col-span-2">
+                <label for="codigo" class="block text-gray-700 font-semibold mb-2">
+                  Código do Cupom *
+                </label>
+                <input
+                  type="text"
+                  id="codigo"
+                  name="codigo"
+                  [(ngModel)]="cupom.codigo"
+                  required
+                  class="input-field"
+                  placeholder="Ex: BEMVINDO10"
+                />
+              </div>
+
+              <!-- Tipo de Desconto -->
+              <div>
+                <label for="tipoDesconto" class="block text-gray-700 font-semibold mb-2">
+                  Tipo de Desconto *
+                </label>
+                <select
+                  id="tipoDesconto"
+                  name="tipoDesconto"
+                  [(ngModel)]="cupom.tipoDesconto"
+                  required
+                  class="input-field"
+                >
+                  <option [value]="tiposDesconto.PERCENTUAL">Percentual (%)</option>
+                  <option [value]="tiposDesconto.VALOR_FIXO">Valor Fixo (R$)</option>
+                </select>
+              </div>
+
+              <!-- Valor do Desconto -->
+              <div>
+                <label for="valorDesconto" class="block text-gray-700 font-semibold mb-2">
+                  Valor do Desconto *
+                </label>
+                <input
+                  type="number"
+                  id="valorDesconto"
+                  name="valorDesconto"
+                  [(ngModel)]="cupom.valorDesconto"
+                  required
+                  min="0"
+                  step="0.01"
+                  class="input-field"
+                  [placeholder]="cupom.tipoDesconto === tiposDesconto.PERCENTUAL ? 'Ex: 10' : 'Ex: 50.00'"
+                />
+              </div>
+
+              <!-- Data de Validade -->
+              <div>
+                <label for="dataValidade" class="block text-gray-700 font-semibold mb-2">
+                  Data de Validade *
+                </label>
+                <input
+                  type="date"
+                  id="dataValidade"
+                  name="dataValidade"
+                  [(ngModel)]="cupom.dataValidade"
+                  required
+                  class="input-field"
+                />
+              </div>
+
+              <!-- Quantidade Disponível -->
+              <div>
+                <label for="quantidadeDisponivel" class="block text-gray-700 font-semibold mb-2">
+                  Quantidade Disponível *
+                </label>
+                <input
+                  type="number"
+                  id="quantidadeDisponivel"
+                  name="quantidadeDisponivel"
+                  [(ngModel)]="cupom.quantidadeDisponivel"
+                  required
+                  min="1"
+                  class="input-field"
+                  placeholder="Ex: 100"
+                />
+              </div>
+
+              <!-- Loja -->
+              <div class="md:col-span-2">
+                <label for="lojaId" class="block text-gray-700 font-semibold mb-2">
+                  Loja Associada (opcional)
+                </label>
+                <select
+                  id="lojaId"
+                  name="lojaId"
+                  [(ngModel)]="cupom.lojaId"
+                  class="input-field"
+                >
+                  <option [value]="undefined">Todas as lojas</option>
+                  <option *ngFor="let loja of lojas" [value]="loja.id">
+                    {{ loja.nome }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Regras de Uso -->
+              <div class="md:col-span-2">
+                <label for="regrasUso" class="block text-gray-700 font-semibold mb-2">
+                  Regras de Uso
+                </label>
+                <textarea
+                  id="regrasUso"
+                  name="regrasUso"
+                  [(ngModel)]="cupom.regrasUso"
+                  rows="3"
+                  class="input-field"
+                  placeholder="Ex: Válido para primeira compra acima de R$ 100"
+                ></textarea>
+              </div>
+
+              <!-- Ativo -->
+              <div class="md:col-span-2 flex items-center">
+                <input
+                  type="checkbox"
+                  id="ativo"
+                  name="ativo"
+                  [(ngModel)]="cupom.ativo"
+                  class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                />
+                <label for="ativo" class="ml-2 text-gray-700 font-semibold">
+                  Cupom Ativo
+                </label>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 mt-8">
+              <button
+                type="submit"
+                [disabled]="loading || !cupomForm.form.valid"
+                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span *ngIf="!loading">{{ isEditMode ? 'Atualizar' : 'Criar' }} Cupom</span>
+                <span *ngIf="loading">Salvando...</span>
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn-secondary"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

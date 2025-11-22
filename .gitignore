@@ -1,0 +1,105 @@
+# .NET / C# Backend
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+.vscode/
+*.swp
+*.cache
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+.vscode/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww]in32/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Angular / Frontend
+Frontend/**/node_modules/
+Frontend/**/.angular/
+Frontend/**/dist/
+Frontend/**/tmp/
+Frontend/**/out-tsc/
+Frontend/**/bazel-out/
+Frontend/**/npm-debug.log
+Frontend/**/yarn-error.log
+
+# Compiled output
+Frontend/**/dist
+Frontend/**/tmp
+Frontend/**/out-tsc
+Frontend/**/bazel-out
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
+
+# Miscellaneous
+*.log
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+
+# Database
+*.db
+*.sqlite
+*.mdf
+*.ldf

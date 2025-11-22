@@ -1,0 +1,122 @@
+<div class="flex flex-col h-screen">
+  <app-navbar></app-navbar>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Gerenciar Cupons</h1>
+          <a routerLink="/cupons/novo" class="btn-primary">
+            + Novo Cupom
+          </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Buscar</label>
+              <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (ngModelChange)="onSearchChange()"
+                placeholder="Buscar por código ou regras..."
+                class="input-field"
+              />
+            </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">Status</label>
+              <select
+                [(ngModel)]="filterStatus"
+                (ngModelChange)="onFilterChange()"
+                class="input-field"
+              >
+                <option value="all">Todos</option>
+                <option value="active">Ativos</option>
+                <option value="inactive">Inativos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
+          <p class="mt-4 text-gray-600">Carregando cupons...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && filteredCupons.length === 0" class="text-center py-12">
+          <p class="text-gray-500 text-lg">Nenhum cupom encontrado.</p>
+          <a routerLink="/cupons/novo" class="btn-primary mt-4 inline-block">
+            Criar Primeiro Cupom
+          </a>
+        </div>
+
+        <!-- Cupons List -->
+        <div *ngIf="!loading && filteredCupons.length > 0" class="grid grid-cols-1 gap-4">
+          <div *ngFor="let cupom of filteredCupons" class="card hover:shadow-lg transition duration-200">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div class="flex-1 mb-4 md:mb-0">
+                <div class="flex items-center mb-2">
+                  <h3 class="text-xl font-bold text-gray-800 mr-3">{{ cupom.codigo }}</h3>
+                  <span
+                    *ngIf="cupom.ativo && !isExpired(cupom) && !isEsgotado(cupom)"
+                    class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full"
+                  >
+                    Ativo
+                  </span>
+                  <span
+                    *ngIf="!cupom.ativo"
+                    class="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded-full"
+                  >
+                    Inativo
+                  </span>
+                  <span
+                    *ngIf="isExpired(cupom)"
+                    class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full ml-2"
+                  >
+                    Expirado
+                  </span>
+                  <span
+                    *ngIf="isEsgotado(cupom)"
+                    class="px-3 py-1 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full ml-2"
+                  >
+                    Esgotado
+                  </span>
+                </div>
+                
+                <p class="text-gray-600 mb-2">{{ cupom.regrasUso || 'Sem regras específicas' }}</p>
+                
+                <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+                  <span><strong>Desconto:</strong> {{ getDescontoFormatado(cupom) }}</span>
+                  <span><strong>Validade:</strong> {{ cupom.dataValidade | date:'dd/MM/yyyy' }}</span>
+                  <span><strong>Disponível:</strong> {{ cupom.quantidadeDisponivel - (cupom.quantidadeUtilizada || 0) }} / {{ cupom.quantidadeDisponivel }}</span>
+                  <span><strong>Utilizado:</strong> {{ cupom.quantidadeUtilizada || 0 }}x</span>
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <a
+                  [routerLink]="['/cupons/editar', cupom.id]"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200"
+                >
+                  Editar
+                </a>
+                <button
+                  (click)="deleteCupom(cupom.id!)"
+                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

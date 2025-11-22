@@ -1,0 +1,68 @@
+<div class="flex flex-col h-screen">
+  <app-navbar></app-navbar>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Gerenciar Lojas</h1>
+          <a routerLink="/lojas/nova" class="btn-primary">+ Nova Loja</a>
+        </div>
+
+        <div class="card mb-6">
+          <label class="block text-gray-700 font-semibold mb-2">Buscar</label>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()"
+            placeholder="Buscar por nome, CNPJ ou email..."
+            class="input-field"
+          />
+        </div>
+
+        <div *ngIf="loading" class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
+          <p class="mt-4 text-gray-600">Carregando lojas...</p>
+        </div>
+
+        <div *ngIf="!loading && filteredLojas.length === 0" class="text-center py-12">
+          <p class="text-gray-500 text-lg">Nenhuma loja encontrada.</p>
+          <a routerLink="/lojas/nova" class="btn-primary mt-4 inline-block">Cadastrar Primeira Loja</a>
+        </div>
+
+        <div *ngIf="!loading && filteredLojas.length > 0" class="grid grid-cols-1 gap-4">
+          <div *ngFor="let loja of filteredLojas" class="card hover:shadow-lg transition duration-200">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div class="flex-1 mb-4 md:mb-0">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">{{ loja.nome }}</h3>
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                  <span><strong>CNPJ:</strong> {{ loja.cnpj }}</span>
+                  <span><strong>Email:</strong> {{ loja.email }}</span>
+                  <span *ngIf="loja.telefone"><strong>Tel:</strong> {{ loja.telefone }}</span>
+                </div>
+                <p *ngIf="loja.endereco" class="text-sm text-gray-600 mt-2">{{ loja.endereco }}</p>
+              </div>
+              
+              <div class="flex gap-2">
+                <a
+                  [routerLink]="['/lojas/editar', loja.id]"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition duration-200"
+                >
+                  Editar
+                </a>
+                <button
+                  (click)="deleteLoja(loja.id!)"
+                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

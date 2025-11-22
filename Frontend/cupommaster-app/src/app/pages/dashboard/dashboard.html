@@ -1,0 +1,85 @@
+<div class="flex flex-col h-screen">
+  <app-navbar></app-navbar>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+      <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-center py-12">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
+          <p class="mt-4 text-gray-600">Carregando dados...</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <!-- Total Cupons -->
+          <div class="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-blue-100 text-sm">Total de Cupons</p>
+                <p class="text-3xl font-bold mt-2">{{ totalCupons }}</p>
+              </div>
+              <div class="text-5xl opacity-50">🎫</div>
+            </div>
+          </div>
+
+          <!-- Cupons Ativos -->
+          <div class="card bg-gradient-to-br from-green-500 to-green-600 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-green-100 text-sm">Cupons Ativos</p>
+                <p class="text-3xl font-bold mt-2">{{ cuponsAtivos }}</p>
+              </div>
+              <div class="text-5xl opacity-50">✅</div>
+            </div>
+          </div>
+
+          <!-- Cupons Utilizados -->
+          <div class="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-purple-100 text-sm">Cupons Utilizados</p>
+                <p class="text-3xl font-bold mt-2">{{ cuponsUtilizados }}</p>
+              </div>
+              <div class="text-5xl opacity-50">📊</div>
+            </div>
+          </div>
+
+          <!-- Total Lojas -->
+          <div class="card bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-orange-100 text-sm">Lojas Parceiras</p>
+                <p class="text-3xl font-bold mt-2">{{ totalLojas }}</p>
+              </div>
+              <div class="text-5xl opacity-50">🏪</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card hover:shadow-lg transition duration-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">🎫 Gerenciar Cupons</h2>
+            <p class="text-gray-600 mb-4">Crie, edite e visualize todos os cupons cadastrados no sistema.</p>
+            <a routerLink="/cupons" class="btn-primary inline-block text-center">
+              Ver Cupons
+            </a>
+          </div>
+
+          <div class="card hover:shadow-lg transition duration-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">🏪 Gerenciar Lojas</h2>
+            <p class="text-gray-600 mb-4">Gerencie as lojas parceiras e suas informações.</p>
+            <a routerLink="/lojas" class="btn-primary inline-block text-center">
+              Ver Lojas
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

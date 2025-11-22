@@ -1,0 +1,118 @@
+-- =============================================
+-- Diagrama do Banco de Dados CupomMaster
+-- =============================================
+
+/*
+┌─────────────────────────┐
+│        Users            │
+├─────────────────────────┤
+│ PK  Id (INT)            │
+│ UQ  Username (50)       │
+│ UQ  Email (100)         │
+│     Telefone (20)       │
+│     PasswordHash (500)  │
+│     Role (INT)          │
+│     CreatedAt           │
+│     UpdatedAt           │
+└─────────────────────────┘
+
+┌─────────────────────────┐
+│        Lojas            │
+├─────────────────────────┤
+│ PK  Id (INT)            │
+│     Nome (200)          │
+│ UQ  CNPJ (18)           │
+│     Email (100)         │
+│     Telefone (20)       │
+│     Endereco (500)      │
+│     Ativo (BIT)         │
+│     CreatedAt           │
+│     UpdatedAt           │
+└─────────────────────────┘
+           │
+           │ 1
+           │
+           │ N
+           ▼
+┌─────────────────────────┐
+│        Cupons           │
+├─────────────────────────┤
+│ PK  Id (INT)            │
+│ UQ  Codigo (50)         │
+│     ValorDesconto       │
+│     TipoDesconto (INT)  │
+│     DataValidade        │
+│     QuantidadeDispon.   │
+│     QuantidadeUtiliz.   │
+│     Ativo (BIT)         │
+│     RegrasUso (1000)    │
+│ FK  LojaId (NULL)       │
+│     CreatedAt           │
+│     UpdatedAt           │
+└─────────────────────────┘
+           │
+           │ 1
+           │
+           │ N
+           ▼
+┌─────────────────────────┐
+│    HistoricoUsos        │
+├─────────────────────────┤
+│ PK  Id (INT)            │
+│ FK  CupomId (CASCADE)   │
+│     DataUso             │
+│     ValorPedido         │
+│     ValorDesconto       │
+│ FK  LojaId (NULL)       │
+│     Observacao (500)    │
+└─────────────────────────┘
+
+┌──────────────────────────────────────────────┐
+│              Relacionamentos                  │
+├──────────────────────────────────────────────┤
+│ Lojas 1──N Cupons                            │
+│   • FK: Cupons.LojaId → Lojas.Id            │
+│   • ON DELETE: SET NULL                      │
+│                                              │
+│ Cupons 1──N HistoricoUsos                    │
+│   • FK: HistoricoUsos.CupomId → Cupons.Id   │
+│   • ON DELETE: CASCADE                       │
+│                                              │
+│ Lojas 1──N HistoricoUsos                     │
+│   • FK: HistoricoUsos.LojaId → Lojas.Id     │
+│   • ON DELETE: NO ACTION                     │
+└──────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────┐
+│                 Índices                       │
+├──────────────────────────────────────────────┤
+│ Users:                                        │
+│   • UNIQUE INDEX: Username                   │
+│   • UNIQUE INDEX: Email                      │
+│                                              │
+│ Lojas:                                        │
+│   • UNIQUE INDEX: CNPJ                       │
+│                                              │
+│ Cupons:                                       │
+│   • UNIQUE INDEX: Codigo                     │
+│   • INDEX: LojaId                            │
+│   • INDEX: DataValidade                      │
+│                                              │
+│ HistoricoUsos:                                │
+│   • INDEX: CupomId                           │
+│   • INDEX: LojaId                            │
+│   • INDEX: DataUso                           │
+└──────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────┐
+│              Enumerações                      │
+├──────────────────────────────────────────────┤
+│ UserRole:                                     │
+│   • 0 = ADMIN                                │
+│   • 1 = OPERADOR                             │
+│                                              │
+│ TipoDesconto:                                 │
+│   • 0 = PERCENTUAL                           │
+│   • 1 = VALOR_FIXO                           │
+└──────────────────────────────────────────────┘
+*/
