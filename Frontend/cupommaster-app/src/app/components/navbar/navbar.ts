@@ -22,6 +22,11 @@ export class Navbar implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
   }
 
+  getUserRoleText(): string {
+    if (!this.currentUser) return '';
+    return this.currentUser.role === 0 ? 'Administrador' : 'Operador';
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

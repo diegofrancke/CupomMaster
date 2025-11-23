@@ -24,7 +24,16 @@
 
               <div>
                 <label for="cnpj" class="block text-gray-700 font-semibold mb-2">CNPJ *</label>
-                <input type="text" id="cnpj" name="cnpj" [(ngModel)]="loja.cnpj" required class="input-field" placeholder="00.000.000/0000-00" />
+                <input 
+                  type="text" 
+                  id="cnpj" 
+                  name="cnpj" 
+                  [(ngModel)]="loja.cnpj" 
+                  (input)="formatCNPJ($event)"
+                  required 
+                  class="input-field" 
+                  placeholder="00.000.000/0000-00"
+                  maxlength="18" />
               </div>
 
               <div>
@@ -34,7 +43,15 @@
 
               <div class="md:col-span-2">
                 <label for="telefone" class="block text-gray-700 font-semibold mb-2">Telefone</label>
-                <input type="tel" id="telefone" name="telefone" [(ngModel)]="loja.telefone" class="input-field" placeholder="(00) 00000-0000" />
+                <input 
+                  type="tel" 
+                  id="telefone" 
+                  name="telefone" 
+                  [(ngModel)]="loja.telefone" 
+                  (input)="formatTelefone($event)"
+                  class="input-field" 
+                  placeholder="(00) 00000-0000"
+                  maxlength="15" />
               </div>
 
               <div class="md:col-span-2">

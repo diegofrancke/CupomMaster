@@ -1,0 +1,86 @@
+<div class="flex flex-col h-screen">
+  <app-navbar></app-navbar>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">
+          {{ isEditMode ? 'Editar Usuário' : 'Novo Usuário' }}
+        </h1>
+
+        <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          {{ errorMessage }}
+        </div>
+
+        <div class="card">
+          <form (ngSubmit)="onSubmit()" #userFormRef="ngForm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="md:col-span-2">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Nome de Usuário *</label>
+                <input type="text" id="username" name="username" [(ngModel)]="user.username" required class="input-field" placeholder="Ex: joao.silva" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="email" class="block text-gray-700 font-semibold mb-2">Email *</label>
+                <input type="email" id="email" name="email" [(ngModel)]="user.email" required class="input-field" placeholder="usuario@email.com" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="telefone" class="block text-gray-700 font-semibold mb-2">Telefone</label>
+                <input type="tel" id="telefone" name="telefone" [(ngModel)]="user.telefone" class="input-field" placeholder="(00) 00000-0000" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="role" class="block text-gray-700 font-semibold mb-2">Nível de Acesso *</label>
+                <select id="role" name="role" [(ngModel)]="user.role" required class="input-field">
+                  <option [value]="0">Admin</option>
+                  <option [value]="1">Operador</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">
+                  Senha {{ isEditMode ? '(deixe em branco para não alterar)' : '*' }}
+                </label>
+                <input 
+                  type="password" 
+                  id="password" 
+                  name="password" 
+                  [(ngModel)]="user.password" 
+                  [required]="!isEditMode"
+                  class="input-field" 
+                  placeholder="Digite a senha" 
+                />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="confirmPassword" class="block text-gray-700 font-semibold mb-2">
+                  Confirmar Senha {{ isEditMode ? '' : '*' }}
+                </label>
+                <input 
+                  type="password" 
+                  id="confirmPassword" 
+                  name="confirmPassword" 
+                  [(ngModel)]="confirmPassword" 
+                  [required]="!isEditMode || user.password"
+                  class="input-field" 
+                  placeholder="Confirme a senha" 
+                />
+              </div>
+            </div>
+
+            <div class="flex gap-4 mt-8">
+              <button type="submit" [disabled]="loading || !userFormRef.form.valid" class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                <span *ngIf="!loading">{{ isEditMode ? 'Atualizar' : 'Criar' }} Usuário</span>
+                <span *ngIf="loading">Salvando...</span>
+              </button>
+              <button type="button" (click)="cancel()" class="btn-secondary">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

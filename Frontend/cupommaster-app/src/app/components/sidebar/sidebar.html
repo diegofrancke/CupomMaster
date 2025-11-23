@@ -1,13 +1,35 @@
 <aside class="w-64 bg-gray-800 min-h-screen text-white">
-  <nav class="mt-8">
-    <a
-      *ngFor="let item of menuItems"
-      [routerLink]="item.path"
-      routerLinkActive="bg-primary-600"
-      class="flex items-center px-6 py-3 hover:bg-gray-700 transition duration-200"
-    >
-      <span class="text-2xl mr-3">{{ item.icon }}</span>
-      <span class="font-semibold">{{ item.label }}</span>
-    </a>
+  <nav>
+    <div *ngFor="let item of menuItems">
+      <!-- Menu Principal -->
+      <div
+        (click)="toggleMenu(item)"
+        [routerLink]="item.children && item.children.length > 0 ? null : item.path"
+        class="flex items-center justify-between px-6 py-3 hover:bg-gray-700 transition duration-200 cursor-pointer"
+        [class.bg-primary-600]="!item.children && item.path"
+        routerLinkActive="bg-primary-600"
+      >
+        <div class="flex items-center">
+          <span class="text-2xl mr-3">{{ item.icon }}</span>
+          <span class="font-semibold">{{ item.label }}</span>
+        </div>
+        <span *ngIf="item.children && item.children.length > 0" class="text-lg">
+          {{ item.expanded ? '▼' : '▶' }}
+        </span>
+      </div>
+
+      <!-- Submenus -->
+      <div *ngIf="item.children && item.children.length > 0 && item.expanded">
+        <a
+          *ngFor="let child of item.children"
+          [routerLink]="child.path"
+          routerLinkActive="bg-primary-600"
+          class="flex items-center pl-12 pr-6 py-3 hover:bg-gray-700 transition duration-200"
+        >
+          <span class="text-xl mr-3">{{ child.icon }}</span>
+          <span class="font-medium">{{ child.label }}</span>
+        </a>
+      </div>
+    </div>
   </nav>
 </aside>

@@ -41,7 +41,20 @@ export class Login {
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.message || 'Erro ao fazer login';
+        console.error('Erro de login:', error);
+        
+        // Tratamento de erros específicos
+        if (error.status === 401) {
+          this.errorMessage = 'Usuário ou senha incorretos. Verifique suas credenciais e tente novamente.';
+        } else if (error.status === 404) {
+          this.errorMessage = 'Usuário não encontrado. Verifique seu nome de usuário ou cadastre-se.';
+        } else if (error.status === 0) {
+          this.errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
+        } else if (error.error?.message) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Erro ao fazer login. Tente novamente mais tarde.';
+        }
       }
     });
   }

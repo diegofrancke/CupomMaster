@@ -5,6 +5,7 @@ using CupomMaster.API.Services;
 
 namespace CupomMaster.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CupomsController : ControllerBase

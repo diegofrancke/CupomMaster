@@ -8,8 +8,8 @@ export interface User {
 }
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  OPERADOR = 'OPERADOR'
+  ADMIN = 0,
+  OPERADOR = 1
 }
 
 export interface LoginRequest {

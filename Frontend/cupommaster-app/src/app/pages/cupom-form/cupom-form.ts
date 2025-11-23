@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -15,11 +15,11 @@ import { Cupom, TipoDesconto, Loja } from '../../models/cupom.model';
   styleUrl: './cupom-form.css',
 })
 export class CupomForm implements OnInit {
-  cupom: Cupom = {
+  cupom: any = {
     codigo: '',
     valorDesconto: 0,
     tipoDesconto: TipoDesconto.PERCENTUAL,
-    dataValidade: new Date(),
+    dataValidade: new Date().toISOString().split('T')[0],
     quantidadeDisponivel: 0,
     ativo: true,
     regrasUso: ''
@@ -36,17 +36,23 @@ export class CupomForm implements OnInit {
     private cupomService: CupomService,
     private lojaService: LojaService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    console.log('ngOnInit - CupomForm');
     this.loadLojas();
     
     this.route.params.subscribe(params => {
+      console.log('Parâmetros da rota:', params);
       if (params['id']) {
         this.isEditMode = true;
         this.cupomId = +params['id'];
+        console.log('Modo edição ativado. ID:', this.cupomId);
         this.loadCupom(this.cupomId);
+      } else {
+        console.log('Modo criação - sem ID na rota');
       }
     });
   }
@@ -60,13 +66,27 @@ export class CupomForm implements OnInit {
   }
 
   loadCupom(id: number): void {
+    console.log('Carregando cupom com ID:', id);
     this.cupomService.getCupomById(id).subscribe({
       next: (cupom) => {
+        console.log('Cupom recebido do backend:', cupom);
         if (cupom) {
-          this.cupom = { ...cupom };
+          this.cupom = { 
+            codigo: cupom.codigo || '',
+            valorDesconto: cupom.valorDesconto || 0,
+            tipoDesconto: cupom.tipoDesconto ?? TipoDesconto.PERCENTUAL,
+            dataValidade: cupom.dataValidade ? new Date(cupom.dataValidade).toISOString().split('T')[0] : '',
+            quantidadeDisponivel: cupom.quantidadeDisponivel || 0,
+            ativo: cupom.ativo ?? true,
+            regrasUso: cupom.regrasUso || '',
+            lojaId: cupom.lojaId
+          };
+          console.log('Cupom configurado para edi\u00e7\u00e3o:', this.cupom);
+          this.cdr.detectChanges();
         }
       },
       error: (error) => {
+        console.error('Erro ao carregar cupom:', error);
         this.errorMessage = 'Erro ao carregar cupom';
       }
     });
@@ -80,9 +100,16 @@ export class CupomForm implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
+    // Preparar o cupom para envio
+    const cupomToSend = {
+      ...this.cupom,
+      dataValidade: this.cupom.dataValidade ? new Date(this.cupom.dataValidade).toISOString() : new Date().toISOString(),
+      tipoDesconto: Number(this.cupom.tipoDesconto)
+    };
+
     const observable = this.isEditMode
-      ? this.cupomService.updateCupom(this.cupomId!, this.cupom)
-      : this.cupomService.createCupom(this.cupom);
+      ? this.cupomService.updateCupom(this.cupomId!, cupomToSend)
+      : this.cupomService.createCupom(cupomToSend);
 
     observable.subscribe({
       next: () => {

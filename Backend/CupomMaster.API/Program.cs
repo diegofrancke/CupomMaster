@@ -76,6 +76,9 @@ app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Redirecionar rota raiz para o Swagger
+app.MapGet("/", () => Results.Redirect("/swagger"));
+
 app.MapControllers();
 
 app.Run();

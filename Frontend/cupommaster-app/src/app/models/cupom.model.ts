@@ -15,8 +15,8 @@ export interface Cupom {
 }
 
 export enum TipoDesconto {
-  PERCENTUAL = 'PERCENTUAL',
-  VALOR_FIXO = 'VALOR_FIXO'
+  PERCENTUAL = 0,
+  VALOR_FIXO = 1
 }
 
 export interface Loja {
