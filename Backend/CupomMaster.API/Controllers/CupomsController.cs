@@ -130,11 +130,39 @@ namespace CupomMaster.API.Controllers
 
             return Ok(new { message = "Cupom utilizado com sucesso" });
         }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPost("registrar-uso")]
+        public async Task<IActionResult> RegistrarUsoCupom([FromBody] RegistrarUsoCupomRequest request)
+        {
+            try
+            {
+                var result = await _cupomService.RegistrarUsoCupomAsync(request.CupomId, request.LojaId, request.ValorPedido);
+                
+                if (!result.Sucesso)
+                {
+                    return BadRequest(new { message = result.Mensagem });
+                }
+
+                return Ok(new { message = result.Mensagem, valorDesconto = result.ValorDesconto });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao registrar uso do cupom", error = ex.Message });
+            }
+        }
     }
 
     public class UsarCupomRequest
     {
         public int? LojaId { get; set; }
+        public decimal ValorPedido { get; set; }
+    }
+
+    public class RegistrarUsoCupomRequest
+    {
+        public int CupomId { get; set; }
+        public int LojaId { get; set; }
         public decimal ValorPedido { get; set; }
     }
 }

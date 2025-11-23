@@ -10,6 +10,7 @@ import { LojasList } from './pages/lojas-list/lojas-list';
 import { LojaForm } from './pages/loja-form/loja-form';
 import { UsersList } from './pages/users-list/users-list';
 import { UserForm } from './pages/user-form/user-form';
+import { CupomUso } from './pages/cupom-uso/cupom-uso';
 import { authGuard } from './guards/auth.guard';
 import { loginGuard } from './guards/login.guard';
 import { AuthService } from './services/auth.service';
@@ -34,6 +35,7 @@ export const routes: Routes = [
   { path: 'cupons', component: CuponsList, canActivate: [authGuard] },
   { path: 'cupons/novo', component: CupomForm, canActivate: [authGuard] },
   { path: 'cupons/editar/:id', component: CupomForm, canActivate: [authGuard] },
+  { path: 'cupons/uso', component: CupomUso, canActivate: [authGuard] },
   { path: 'lojas', component: LojasList, canActivate: [authGuard] },
   { path: 'lojas/nova', component: LojaForm, canActivate: [authGuard] },
   { path: 'lojas/editar/:id', component: LojaForm, canActivate: [authGuard] },

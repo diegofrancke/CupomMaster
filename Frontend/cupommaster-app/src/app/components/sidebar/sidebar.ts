@@ -50,7 +50,8 @@ export class Sidebar implements OnInit {
         path: '/usuarios',
         expanded: true,
         children: [
-          { path: '/usuarios', icon: '👥', label: 'Usuários' }
+          { path: '/usuarios', icon: '👥', label: 'Usuários' },
+          { path: '/cupons/uso', icon: '✅', label: 'Uso de Cupom' }
         ]
       });
     } else {

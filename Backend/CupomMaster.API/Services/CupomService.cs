@@ -218,6 +218,116 @@ namespace CupomMaster.API.Services
             return true;
         }
 
+        public async Task<RegistrarUsoCupomResponse> RegistrarUsoCupomAsync(int cupomId, int lojaId, decimal valorPedido)
+        {
+            // Validar cupom
+            var cupom = await _context.Cupons
+                .Include(c => c.Loja)
+                .FirstOrDefaultAsync(c => c.Id == cupomId);
+
+            if (cupom == null)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Cupom não encontrado"
+                };
+            }
+
+            if (!cupom.Ativo)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Cupom está inativo"
+                };
+            }
+
+            if (cupom.DataValidade < DateTime.UtcNow)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Cupom expirado"
+                };
+            }
+
+            if (cupom.QuantidadeUtilizada >= cupom.QuantidadeDisponivel)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Cupom esgotado - todas as quantidades já foram utilizadas"
+                };
+            }
+
+            // Validar loja
+            var loja = await _context.Lojas.FindAsync(lojaId);
+            if (loja == null)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Loja não encontrada"
+                };
+            }
+
+            if (!loja.Ativo)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = "Loja está inativa"
+                };
+            }
+
+            // Validar se cupom é específico para uma loja
+            if (cupom.LojaId.HasValue && cupom.LojaId != lojaId)
+            {
+                return new RegistrarUsoCupomResponse
+                {
+                    Sucesso = false,
+                    Mensagem = $"Este cupom é exclusivo para a loja: {cupom.Loja?.Nome}"
+                };
+            }
+
+            // Calcular valor do desconto
+            decimal valorDesconto;
+            if (cupom.TipoDesconto == TipoDesconto.PERCENTUAL)
+            {
+                valorDesconto = valorPedido * (cupom.ValorDesconto / 100);
+            }
+            else
+            {
+                valorDesconto = cupom.ValorDesconto;
+            }
+
+            // Registrar uso no histórico
+            var historico = new HistoricoUso
+            {
+                CupomId = cupomId,
+                DataUso = DateTime.UtcNow,
+                ValorPedido = valorPedido,
+                ValorDesconto = valorDesconto,
+                LojaId = lojaId
+            };
+
+            _context.HistoricoUsos.Add(historico);
+
+            // Incrementar quantidade utilizada
+            cupom.QuantidadeUtilizada++;
+            cupom.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return new RegistrarUsoCupomResponse
+            {
+                Sucesso = true,
+                Mensagem = $"Cupom utilizado com sucesso na loja {loja.Nome}",
+                ValorDesconto = valorDesconto
+            };
+        }
+
         private static CupomDto MapToDto(Cupom cupom)
         {
             return new CupomDto

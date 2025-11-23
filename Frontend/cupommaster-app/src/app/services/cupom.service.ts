@@ -17,6 +17,17 @@ interface ValidacaoCupomResponse {
   valorDesconto?: number;
 }
 
+interface RegistrarUsoCupomRequest {
+  cupomId: number;
+  lojaId: number;
+  valorPedido: number;
+}
+
+interface RegistrarUsoCupomResponse {
+  message: string;
+  valorDesconto?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,5 +59,10 @@ export class CupomService {
   validarCupom(codigo: string, valorPedido: number, lojaId?: number): Observable<ValidacaoCupomResponse> {
     const request: ValidacaoCupomRequest = { codigo, valorPedido, lojaId };
     return this.http.post<ValidacaoCupomResponse>(`${this.apiUrl}/validar`, request);
+  }
+
+  registrarUsoCupom(cupomId: number, lojaId: number, valorPedido: number): Observable<RegistrarUsoCupomResponse> {
+    const request: RegistrarUsoCupomRequest = { cupomId, lojaId, valorPedido };
+    return this.http.post<RegistrarUsoCupomResponse>(`${this.apiUrl}/registrar-uso`, request);
   }
 }
