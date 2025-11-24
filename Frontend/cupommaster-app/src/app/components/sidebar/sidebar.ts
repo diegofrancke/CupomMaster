@@ -19,6 +19,7 @@ interface MenuItem {
 })
 export class Sidebar implements OnInit {
   menuItems: MenuItem[] = [];
+  isCollapsed = true; // Começa fechado
 
   constructor(private authService: AuthService) {}
 
@@ -63,5 +64,19 @@ export class Sidebar implements OnInit {
     if (item.children && item.children.length > 0) {
       item.expanded = !item.expanded;
     }
+  }
+
+  openSidebar(): void {
+    this.isCollapsed = false;
+  }
+
+  closeSidebar(): void {
+    this.isCollapsed = true;
+  }
+
+  isChildActive(item: MenuItem): boolean {
+    if (!item.children) return false;
+    const currentPath = window.location.pathname;
+    return item.children.some(child => child.path && currentPath.startsWith(child.path));
   }
 }

@@ -1,33 +1,54 @@
-<aside class="w-64 bg-gray-800 min-h-screen text-white">
+<aside 
+  (click)="openSidebar()"
+  [class]="isCollapsed ? 'w-20' : 'w-64'" 
+  class="bg-gray-800 min-h-screen text-white transition-all duration-300 ease-in-out relative cursor-pointer">
+  
   <nav>
     <div *ngFor="let item of menuItems">
       <!-- Menu Principal -->
       <div
-        (click)="toggleMenu(item)"
+        (click)="toggleMenu(item); $event.stopPropagation()"
         [routerLink]="item.children && item.children.length > 0 ? null : item.path"
         class="flex items-center justify-between px-6 py-3 hover:bg-gray-700 transition duration-200 cursor-pointer"
         [class.bg-primary-600]="!item.children && item.path"
+        [class.justify-center]="isCollapsed"
         routerLinkActive="bg-primary-600"
+        [title]="isCollapsed ? item.label : ''"
       >
-        <div class="flex items-center">
-          <span class="text-2xl mr-3">{{ item.icon }}</span>
-          <span class="font-semibold">{{ item.label }}</span>
+        <div class="flex items-center" [class.justify-center]="isCollapsed" [class.w-full]="isCollapsed">
+          <span class="text-2xl" [class.mr-3]="!isCollapsed">{{ item.icon }}</span>
+          <span *ngIf="!isCollapsed" class="font-semibold">{{ item.label }}</span>
         </div>
-        <span *ngIf="item.children && item.children.length > 0" class="text-lg">
+        <span *ngIf="item.children && item.children.length > 0 && !isCollapsed" class="text-lg">
           {{ item.expanded ? '▼' : '▶' }}
         </span>
       </div>
 
-      <!-- Submenus -->
-      <div *ngIf="item.children && item.children.length > 0 && item.expanded">
+      <!-- Submenus quando aberto -->
+      <div *ngIf="item.children && item.children.length > 0 && item.expanded && !isCollapsed">
         <a
           *ngFor="let child of item.children"
           [routerLink]="child.path"
           routerLinkActive="bg-primary-600"
           class="flex items-center pl-12 pr-6 py-3 hover:bg-gray-700 transition duration-200"
+          (click)="$event.stopPropagation()"
         >
           <span class="text-xl mr-3">{{ child.icon }}</span>
           <span class="font-medium">{{ child.label }}</span>
+        </a>
+      </div>
+
+      <!-- Submenus quando fechado (apenas ícones com indentação) -->
+      <div *ngIf="item.children && item.children.length > 0 && isCollapsed">
+        <a
+          *ngFor="let child of item.children"
+          [routerLink]="child.path"
+          routerLinkActive="bg-primary-600"
+          class="flex items-center justify-center py-3 hover:bg-gray-700 transition duration-200 ml-2"
+          [title]="child.label"
+          (click)="$event.stopPropagation()"
+        >
+          <span class="text-lg">{{ child.icon }}</span>
         </a>
       </div>
     </div>

@@ -2,9 +2,9 @@
   <app-navbar></app-navbar>
   
   <div class="flex flex-1 overflow-hidden">
-    <app-sidebar></app-sidebar>
+    <app-sidebar #sidebar></app-sidebar>
     
-    <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
+    <main (click)="sidebar.closeSidebar()" class="flex-1 overflow-y-auto bg-gray-50 p-8">
       <div class="max-w-3xl mx-auto">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Registrar Uso de Cupom</h1>
         <p class="text-gray-600 mb-8">Registre o uso de um cupom por uma loja específica</p>
